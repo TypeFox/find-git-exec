@@ -1,4 +1,6 @@
 # find-git-exec
+[![Build Status](https://travis-ci.org/TypeFox/find-git-exec.svg?branch=master)](https://travis-ci.org/TypeFox/find-git-exec)
+[![Build status](https://ci.appveyor.com/api/projects/status/8x9w27df2bit7jan/branch/master?svg=true)](https://ci.appveyor.com/project/kittaakos/find-git-exec/branch/master)
 
 A lightweight library for locating the Git executable on the host system.
 
