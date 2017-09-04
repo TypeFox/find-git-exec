@@ -1,0 +1,23 @@
+language: node_js
+
+os:
+  - linux
+  - osx
+
+node_js:
+- '8'
+- '7'
+- '6'
+
+git:
+  depth: 1
+
+branches:
+  only:
+  - master
+
+install:
+  - npm i
+
+script:
+  - npm run build && npm run test

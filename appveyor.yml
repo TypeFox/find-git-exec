@@ -1,0 +1,17 @@
+shallow_clone: true
+
+branches:
+  only:
+  - master
+
+platform:
+  - x64
+
+install:
+  - npm i
+
+build_script:
+  - npm run build
+
+test_script:
+  - npm run test
