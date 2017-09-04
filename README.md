@@ -33,5 +33,3 @@ findGit().then(git => {
 ## License
 Copyright (c) - TypeFox.
 Licensed under the [MIT](LICENSE) license.
-```
-
