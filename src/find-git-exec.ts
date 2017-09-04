@@ -32,9 +32,8 @@ export interface Git {
  */
 export default function (): Promise<Git> {
     switch (process.platform) {
-        case 'darwin': return findGitDarwin();
         case 'win32': return findGitWin32();
-        default: return findGit('git');
+        default: return findGitNix();
     }
 }
 
@@ -62,14 +61,14 @@ async function exec(path: string, command: string | string[]): Promise<string> {
     });
 }
 
-async function findGitDarwin(): Promise<Git> {
+async function findGitNix(): Promise<Git> {
     return new Promise<Git>((resolve, reject) => {
         cp.exec('which git', (error, buffer) => {
             if (error) {
                 return reject('Git not found.');
             }
             const path = buffer.toString().replace(/^\s+|\s+$/g, '');
-            if (path !== 'usr/bin/git') {
+            if (path !== 'usr/bin/git' || process.platform !== 'darwin') {
                 return resolve(findGit(path));
             }
             cp.exec('xcode-select -p', (error: any) => {
