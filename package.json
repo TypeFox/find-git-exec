@@ -1,6 +1,6 @@
 {
   "name": "find-git-exec",
-  "version": "0.0.1-alpha.1",
+  "version": "0.0.1-alpha.2",
   "description": "A lightweight library for locating the Git executable on the host system",
   "keywords": [
     "git"
@@ -17,7 +17,8 @@
     "lib",
     "src"
   ],
-  "main": "lib/find-git-exec.js",
+  "main": "lib/find-git-exec",
+  "typings": "lib/find-git-exec",
   "scripts": {
     "build": "tsc && tslint -c ./tslint.json --project ./tsconfig.json",
     "test": "mocha --opts ./mocha.opts \"src/**/*.spec.ts\"",
