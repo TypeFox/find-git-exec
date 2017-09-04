@@ -2,9 +2,12 @@ language: node_js
 
 os:
   - linux
+  - osx
 
 node_js:
 - '8'
+- '7'
+- '6'
 
 git:
   depth: 1
@@ -12,9 +15,6 @@ git:
 branches:
   only:
   - master
-
-before_install:
-  - which git
 
 install:
   - npm i
