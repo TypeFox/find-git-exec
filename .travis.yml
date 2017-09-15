@@ -5,19 +5,36 @@ os:
   - osx
 
 node_js:
-- '8'
-- '7'
-- '6'
+  - '8'
+  - '7'
+  - '6'
 
 git:
   depth: 1
 
 branches:
   only:
-  - master
+    - master
+
+env:
+  matrix:
+    - NO_GIT_EXEC=true
+    - NO_GIT_EXEC=false
 
 install:
   - npm i
+
+before_script:
+  - if [ ${NO_GIT_EXEC} = "false" ]; then 
+      if [ ${TRAVIS_OS_NAME} = "linux" ]; then
+        sudo apt-get remove git
+      else
+        sudo rm -rf /usr/local/git/
+        sudo rm /etc/paths.d/git
+        sudo rm /etc/manpaths.d/git
+        sudo pkgutil --forget --pkgs=GitOSX\.Installer\.git[A-Za-z0-9]*\.[a-z]*.pkg
+      fi
+    fi 
 
 script:
   - npm run build && npm run test
