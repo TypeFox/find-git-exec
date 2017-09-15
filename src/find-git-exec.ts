@@ -123,6 +123,7 @@ function parseVersion(raw: string): string {
 function normalizePath(pathToNormalize: string): string {
     return path.normalize(pathToNormalize);
 }
+
 function env(key: string): string {
     return process.env[key] || '';
 }
