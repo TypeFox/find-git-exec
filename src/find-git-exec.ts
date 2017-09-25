@@ -43,7 +43,7 @@ async function findGit(path: string): Promise<Git> {
             resolve({
                 path,
                 version: parseVersion(await exec(path, '--version')),
-                execPath: await exec(path, '--exec-path')
+                execPath: normalizePath(await exec(path, '--exec-path'))
             });
         } catch (error) {
             reject(error);
@@ -118,6 +118,10 @@ function toUtf8String(buffers: Buffer[]): string {
 
 function parseVersion(raw: string): string {
     return raw.replace(/^git version /, '');
+}
+
+function normalizePath(pathToNormalize: string): string {
+    return path.normalize(pathToNormalize);
 }
 
 function env(key: string): string {
