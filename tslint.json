@@ -1,6 +1,8 @@
 {
     "rules": {
-        //accepts all options of https://palantir.github.io/tslint/rules/no-unused-expression/ 
+        "//": [
+            "accepts all options of https://palantir.github.io/tslint/rules/no-unused-expression/ "
+        ],
         "no-unused-expression-chai": true,
         "class-name": true,
         "comment-format": [
@@ -18,7 +20,6 @@
             180
         ],
         "no-trailing-whitespace": true,
-        "no-use-before-declare": true,
         "no-var-keyword": true,
         "one-line": [
             true,
