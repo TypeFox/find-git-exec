@@ -50,10 +50,6 @@ export default async function ({ hint, onLookup }: { hint: string | undefined, o
         .then(null, () => Promise.reject(new Error('Git installation not found.')));
 }
 
-function toUtf8String(buffers: Buffer[]): string {
-    return Buffer.concat(buffers).toString('utf8').trim();
-}
-
 function parseVersion(raw: string): string {
     return raw.replace(/^git version /, '');
 }
@@ -65,12 +61,10 @@ function normalizePath(pathToNormalize: string): string {
 function findSpecificGit(path: string, onLookup: (path: string) => void): Promise<Git> {
     return new Promise<Git>((c, e) => {
         onLookup(path);
-
-        Promise.all([
-            exec(path, '--version'),
-            exec(path, '--exec-path')
-        ]).then(([version, execPath]) => {
-            c({ path, version: parseVersion(version), execPath: normalizePath(execPath) });
+        exec(path, '--version').then(version => {
+            exec(path, '--exec-path').then(execPath => {
+                c({ path, version: parseVersion(version), execPath: normalizePath(execPath) });
+            });
         }).catch(err => {
             e(err);
         });
@@ -79,11 +73,13 @@ function findSpecificGit(path: string, onLookup: (path: string) => void): Promis
 
 async function exec(path: string, command: string | string[]): Promise<string> {
     return new Promise<string>((c, e) => {
-        const buffers: Buffer[] = [];
-        const child = cp.spawn(path, Array.isArray(command) ? command : [command]);
-        child.stdout.on('data', (b: Buffer) => buffers.push(b));
-        child.on('error', e);
-        child.on('exit', code => code ? e(new Error(`Git not found under '${path}'.`)) : c(toUtf8String(buffers)));
+        cp.execFile(path, Array.isArray(command) ? command : [command], { encoding: 'utf-8' }, (error, stdout, stderr) => {
+            if (error) {
+                e(new Error(`Git not found under '${path}'.`));
+                return;
+            }
+            c(stdout.toString().trim());
+        });
     });
 }
 
