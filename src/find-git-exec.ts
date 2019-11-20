@@ -50,6 +50,10 @@ export default async function ({ hint, onLookup }: { hint: string | undefined, o
         .then(null, () => Promise.reject(new Error('Git installation not found.')));
 }
 
+function toUtf8String(buffers: Buffer[]): string {
+    return Buffer.concat(buffers).toString('utf8').trim();
+}
+
 function parseVersion(raw: string): string {
     return raw.replace(/^git version /, '');
 }
@@ -73,13 +77,11 @@ function findSpecificGit(path: string, onLookup: (path: string) => void): Promis
 
 async function exec(path: string, command: string | string[]): Promise<string> {
     return new Promise<string>((c, e) => {
-        cp.execFile(path, Array.isArray(command) ? command : [command], { encoding: 'utf-8' }, (error, stdout, stderr) => {
-            if (error) {
-                e(new Error(`Git not found under '${path}'.`));
-                return;
-            }
-            c(stdout.toString().trim());
-        });
+        const buffers: Buffer[] = [];
+        const child = cp.spawn(path, Array.isArray(command) ? command : [command]);
+        child.stdout.on('data', (b: Buffer) => buffers.push(b));
+        child.on('error', e);
+        child.on('close', code => code ? e(new Error(`Git not found under '${path}'.`)) : c(toUtf8String(buffers)));
     });
 }
 
