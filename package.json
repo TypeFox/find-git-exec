@@ -1,12 +1,12 @@
 {
   "name": "find-git-exec",
-  "version": "0.0.2",
+  "version": "0.0.1",
   "description": "A lightweight library for locating the Git executable on the host system",
   "keywords": [
     "git"
   ],
   "engines": {
-    "node": ">=10.11.0 <12"
+    "node": ">=10.11.0 <=12.16.1"
   },
   "repository": {
     "type": "git",
