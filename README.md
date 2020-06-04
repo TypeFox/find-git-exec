@@ -4,6 +4,13 @@
 A lightweight library for locating the Git executable on the host system.
 This library is a stripped down version of the Git discovery logic [implemented and used by VS Code](https://github.com/microsoft/vscode/blob/master/extensions/git/src/git.ts#L50-L141).
 
+## Requirements
+```
+  "engines": {
+    "node": ">=10.11.0 <13"
+  },
+```
+
 ## Install
 ```bash
 yarn add find-git-exec
