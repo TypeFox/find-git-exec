@@ -33,18 +33,27 @@ export interface Git {
 
 }
 
+export interface FindGitOptions {
+    hint?: string;
+    onLookup?: (path: string) => void;
+}
+
 /**
  * Resolves to the path of the locally available Git executable. Will be rejected if Git cannot be found on the system.
  * `hint` can be provided as the initial lookup path, and `onLookup` function is used for logging during the Git discovery.
  */
-export default async function ({ hint, onLookup }: { hint: string | undefined, onLookup: (path: string) => void } = { hint: undefined, onLookup: () => { } }): Promise<Git> {
-    const first = hint ? findSpecificGit(hint, onLookup) : Promise.reject<Git>(null);
+export default async function ({ hint, onLookup }: FindGitOptions = {}): Promise<Git> {
+    const lookup = onLookup ?? (() => { });
+    const first = hint ? findSpecificGit(hint, lookup) : Promise.reject<Git>(null);
     return first
-        .then(undefined, () => {
+        .then(undefined, async () => {
             switch (process.platform) {
-                case 'darwin': return findGitDarwin(onLookup);
-                case 'win32': return findGitWin32(onLookup);
-                default: return which('git').then(gitOnPath => findSpecificGit(gitOnPath, onLookup));
+                case 'darwin': return findGitDarwin(lookup);
+                case 'win32': return findGitWin32(lookup);
+                default: {
+                    const gitOnPath = await which('git');
+                    return await findSpecificGit(gitOnPath, lookup);
+                }
             }
         })
         .then(null, () => Promise.reject(new Error('Git installation not found.')));
@@ -146,8 +155,8 @@ function findSystemGitWin32(base: string, onLookup: (path: string) => void): Pro
 }
 
 async function findGitWin32InPath(onLookup: (path: string) => void): Promise<Git> {
-    const whichPromise = new Promise<string>((c, e) => which('git.exe', (err, path) => err ? e(err) : c(path)));
-    return whichPromise.then(path => findSpecificGit(path, onLookup));
+    const path = await which('git.exe');
+    return findSpecificGit(path, onLookup);
 }
 
 async function findGitWin32(onLookup: (path: string) => void): Promise<Git> {
